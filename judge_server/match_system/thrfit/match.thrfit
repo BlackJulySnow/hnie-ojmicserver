@@ -1,0 +1,5 @@
+namespace py match_server
+
+service Match {
+    i32 add_player(1: i32 sid, 2: i32 tid)
+}

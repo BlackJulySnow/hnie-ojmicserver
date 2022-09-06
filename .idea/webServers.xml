@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f2e0c83a-93e5-4959-b992-1a8fd4487d12" name="10.0.38.101">
+        <fileTransfer rootFolder="/home/acmore/ilotus/tan-yangyi-took-me-flying" accessType="SFTP" host="10.0.38.113" port="20000" sshConfigId="36da58dd-5e9d-45ad-9f84-4124f5aef8c7" sshConfig="judge@10.0.38.113:20000 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="f1122181-e264-4c23-8f7a-2ffd0e5cc394" name="10.0.38.102">
+        <fileTransfer rootFolder="/home/acmore/WGdaka" accessType="SFTP" host="10.0.38.111" port="22" sshConfigId="8954f570-7e83-4992-83d9-0b38b65dc60c" sshConfig="acmore@10.0.38.111:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="e0ed8aa7-c388-48d1-b628-283697ee9678" name="10.0.38.111">
+        <fileTransfer rootFolder="/home/acmore" accessType="SFTP" host="10.0.38.111" port="22" sshConfigId="8954f570-7e83-4992-83d9-0b38b65dc60c" sshConfig="acmore@10.0.38.111:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="4175c1cd-390f-4d90-a9c5-aef73bef8187" name="10.0.38.113">
+        <fileTransfer rootFolder="/home/acmore/mail" accessType="SFTP" host="10.0.38.113" port="22" sshConfigId="c4a38993-4699-4523-b325-27070e15140d" sshConfig="acmore@10.0.38.113:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="e7b39dff-e227-4a55-a47b-0911f069a0e0" name="OJ微服务">
+        <fileTransfer rootFolder="/home/judge" accessType="SFTP" host="10.0.38.113" port="20000" sshConfigId="36da58dd-5e9d-45ad-9f84-4124f5aef8c7" sshConfig="judge@10.0.38.113:20000 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
