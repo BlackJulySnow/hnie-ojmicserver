@@ -36,6 +36,8 @@ def cfsubmit(contestId, id, lang, code, cookie):
         }
         res = requests.post(url=url, data=data, headers=headers, verify=False, timeout=10)
         s = res.text
+        if s.find('<a href="/enter?back=%2F">Enter</a>') != -1:
+            return {'result': 'false', 'msg': 'unlogin'}
         match = re.findall('submissionId="(.*?)"', s)
     except Exception as e:
         print(e)
@@ -47,4 +49,5 @@ def cfsubmit(contestId, id, lang, code, cookie):
 
 
 if __name__ == '__main__':
-    cfsubmit()
+    res = cfsubmit('1722', 'D', '54', '#include <cstdio>', {"result": "true", "JSESSIONID": "B453DC5F778FC9FD4DCF1BE322D69BA7-n1", "X_User_Sha1": "a72c145eafcdddd1ef4a45cb1405b233bd3e87d0", "ftaa": "m107veb1ofp8ors2va", "bfaa": "0ed97987fd908a6f6f0c77f18469141f", "csrf_token": "1260b18b86c350fb900006c7a97d6a5d"})
+    print(res)

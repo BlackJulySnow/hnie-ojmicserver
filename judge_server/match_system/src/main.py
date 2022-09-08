@@ -227,9 +227,11 @@ def submit(player):
                     if res['msg'] == 'You have submitted exactly the same code before':
                         flag = True
                         break
-                    resp = cflogin(oj['username'], oj['password'], oj['id'])
-                    oj['cookie'] = resp
-                    db.updateOJCookie(oj['id'], json.dumps(resp))
+                    if res['msg'] == 'unlogin':
+                        resp = cflogin(oj['username'], oj['password'], oj['id'])
+                        oj['cookie'] = resp
+                        db.updateOJCookie(oj['id'], json.dumps(resp))
+                        sleep(5)
                     if i >= 9:
                         flag = True
                 if flag:
