@@ -11,6 +11,7 @@ from match_system.src.match_server.match_server import Match
 def operate(sid, tid):
     # Make socket
     transport = TSocket.TSocket('10.0.38.113', 9090)
+    # transport = TSocket.TSocket('10.0.38.14', 9090)
 
     # Buffering is critical. Raw sockets are very slow
     transport = TTransport.TBufferedTransport(transport)

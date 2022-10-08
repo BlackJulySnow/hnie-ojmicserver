@@ -89,7 +89,9 @@ class Pool:
             for i in range(len(self.players)):
                 if self.check_match(self.players[i]):
                     ojs[self.players[i].spj] = sorted(ojs[self.players[i].spj], key=lambda p: p['submitNum'])
+                    ojStatus[self.players[i].spj] -= 1
                     Thread(target=submit, args=(self.players[i],), daemon=True).start()
+                    ojStatus[self.players[i].spj] += 1
                     self.players = self.players[:i] + self.players[i + 1:]
                     break
 
@@ -117,7 +119,6 @@ def worker():
 
 
 def submit(player):
-    ojStatus[player.spj] -= 1
     if player.spj == "acwing":
         for oj in ojs['acwing']:
             if oj['status'] == 0:
@@ -135,6 +136,7 @@ def submit(player):
                     if i >= 9:
                         flag = True
                 if flag:
+                    oj['status'] = 1
                     continue
 
                 oj['submitNum'] += 1
@@ -160,8 +162,19 @@ def submit(player):
                     result = 6
 
                 if result != 11:
-                    info = AcwingGetInfo(player.to_id, oj['cookie'])
-                    db.updateSolution(id=player.sid, pass_rate=info['rate'], time=info['time'], space=info['space'])
+                    flag = False
+                    info = None
+                    for i in range(0, 10):
+                        try:
+                            info = AcwingGetInfo(player.to_id, oj['cookie'])
+                            flag = info['result']
+                        except Exception as e:
+                            pass
+                        if flag is True:
+                            db.updateSolution(id=player.sid, pass_rate=info['rate'], time=info['time'],
+                                              space=info['space'])
+                            break
+                        sleep(1)
                 db.updateSolutionResult(player.sid, str(result))
                 db.updateSolutionJudge(player.sid, "acwing" + str(oj['id']))
                 if result == 4:
@@ -189,15 +202,26 @@ def submit(player):
                     if i >= 9:
                         flag = True
                 if flag:
+                    oj['status'] = 1
                     continue
                 oj['submitNum'] += 1
 
                 result = 0
                 info = None
                 while result < 4:
-                    info = csgGetInfo(res, oj['cookie'])
-                    result = info['result']
-                    sleep(1)
+                    flag = False
+                    for i in range(0, 10):
+                        try:
+                            info = csgGetInfo(res, oj['cookie'])
+                            result = info['result']
+                            flag = info['res']
+                        except Exception as e:
+                            pass
+                        if flag is True:
+                            break
+                        sleep(1)
+                print(player.userid)
+
                 db.updateSolution(id=player.sid, pass_rate=info['rate'], time=info['time'], space=info['memory'])
                 db.updateSolutionResult(player.sid, info['result'])
                 if result == 4:
@@ -225,16 +249,29 @@ def submit(player):
                         break
                     print(res['msg'])
                     if res['msg'] == 'You have submitted exactly the same code before':
-                        flag = True
-                        break
+                        db.updateSolutionResult(player.sid, "22")
+                        db.updateSolutionJudge(player.sid, "codeforces" + str(oj['id']))
+                        db.updateProblem(player.tid)
+                        db.updateUserSubmit(player.userid)
+                        db.closeMysql()
+                        oj['status'] = 0
+                        oj['submitNum'] += 1
+                        ojStatus[player.spj] += 1
+                        return
                     if res['msg'] == 'unlogin':
-                        resp = cflogin(oj['username'], oj['password'], oj['id'])
+                        resp = None
+                        for i in range(10):
+                            resp = cflogin(oj['username'], oj['password'], oj['id'])
+                            if resp['result'] == 'true':
+                                break
                         oj['cookie'] = resp
                         db.updateOJCookie(oj['id'], json.dumps(resp))
-                        sleep(5)
+                        sleep(2)
+                    sleep(3)
                     if i >= 9:
                         flag = True
                 if flag:
+                    oj['status'] = 1
                     continue
                 oj['submitNum'] += 1
 
@@ -248,7 +285,7 @@ def submit(player):
                         pass
                     if flag == 'true':
                         break
-                    sleep(1)
+                    sleep(3)
                 verdict = resp['verdict']
 
                 result = 6
@@ -270,6 +307,13 @@ def submit(player):
                 #     result = 10
                 # elif res == "OUTPUT_LIMIT_EXCEEDED":
                 #     result = 9
+                db.updateSolutionResult(player.sid, str(result))
+                db.updateSolutionJudge(player.sid, "codeforces" + str(oj['id']))
+                if result == 4:
+                    db.updateProblemAC(player.tid)
+                db.updateProblem(player.tid)
+                db.updateUserSolution(player.userid)
+                db.updateUserSubmit(player.userid)
 
                 flag = False
                 info = None
@@ -284,17 +328,9 @@ def submit(player):
                         break
                     sleep(1)
                 db.updateCFSolution(id=player.sid, time=info['time'], space=info['space'])
-                db.updateSolutionResult(player.sid, str(result))
-                db.updateSolutionJudge(player.sid, "codeforces" + str(oj['id']))
-                if result == 4:
-                    db.updateProblemAC(player.tid)
-                db.updateProblem(player.tid)
-                db.updateUserSolution(player.userid)
-                db.updateUserSubmit(player.userid)
                 db.closeMysql()
                 oj['status'] = 0
                 break
-    ojStatus[player.spj] += 1
 
 
 class MatchHandler:

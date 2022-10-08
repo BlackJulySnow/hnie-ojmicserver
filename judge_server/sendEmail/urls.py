@@ -18,10 +18,12 @@ from django.urls import path
 from sendEmail.views.sendEmail import sendEmail
 from sendEmail.views.submitAcwing import submitAcwing
 from sendEmail.views.SubmitOtherOj import SubmitOtherOj
+from sendEmail.views.getProblem.getCfProblem import getCfProblem
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('sendEmail/', sendEmail),
     path('submitAcwing/', submitAcwing),
-    path('SubmitOtherOj/', SubmitOtherOj)
+    path('SubmitOtherOj/', SubmitOtherOj),
+    path('getproblem/cf/', getCfProblem),
 ]

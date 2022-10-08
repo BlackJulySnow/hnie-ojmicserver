@@ -11,15 +11,15 @@ bfaas = ['', '', '', '', '', '', '', '', '', '748390a84a22d8f4e9b56ff73b8d9aed',
 
 
 def getToken(session):
-    url = "https://codeforces.com/enter"
+    url = "http://codeforces.com/enter"
     headers = {
         "authority": "codeforces.com",
         "method": "GET",
         "path": "/enter",
-        "scheme": "https",
+        "scheme": "http",
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "origin": "https://codeforces.com",
-        "referer": "https://codeforces.com/enter",
+        "origin": "http://codeforces.com",
+        "referer": "http://codeforces.com/enter",
         "upgrade-insecure-requests": "1",
         "content-type": "application/x-www-form-urlencoded",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
@@ -31,15 +31,15 @@ def getToken(session):
 
 
 def codeforcesLogin(username, password, ftaa, bfaa, csrf_token, session):
-    url = "https://codeforces.com/enter"
+    url = "http://codeforces.com/enter"
     headers = {
         "authority": "codeforces.com",
         "method": "POST",
         "path": "/enter",
-        "scheme": "https",
+        "scheme": "http",
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "origin": "https://codeforces.com",
-        "referer": "https://codeforces.com/enter",
+        "origin": "http://codeforces.com",
+        "referer": "http://codeforces.com/enter",
         "upgrade-insecure-requests": "1",
         "content-type": "application/x-www-form-urlencoded",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
@@ -53,7 +53,7 @@ def codeforcesLogin(username, password, ftaa, bfaa, csrf_token, session):
         "password": password,
         "_tta": "745",
     }
-    session.post(url=url, data=data, headers=headers, verify=False, timeout=30)
+    session.post(url=url, data=data, headers=headers, verify=False, timeout=60)
 
 
 def cflogin(username, password, ojId):
