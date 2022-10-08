@@ -267,6 +267,16 @@ def submit(player):
                         oj['cookie'] = resp
                         db.updateOJCookie(oj['id'], json.dumps(resp))
                         sleep(2)
+                    if res['msg'] == "Source should satisfy regex [^{}]*public\s+(final)?\s*class\s+(\w+).*":
+                        db.updateSolutionResult(player.sid, "11")
+                        db.updateSolutionJudge(player.sid, "codeforces" + str(oj['id']))
+                        db.updateProblem(player.tid)
+                        db.updateUserSubmit(player.userid)
+                        db.closeMysql()
+                        oj['status'] = 0
+                        oj['submitNum'] += 1
+                        ojStatus[player.spj] += 1
+                        return
                     sleep(3)
                     if i >= 9:
                         flag = True
