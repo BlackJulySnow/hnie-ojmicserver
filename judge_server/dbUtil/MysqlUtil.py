@@ -94,6 +94,17 @@ class MysqlUtil:
             return None
         return userid
 
+    def addInfo(self, sid, info):
+        sql = "INSERT INTO `runtimeinfo`(`solution_id`,`error`) VALUES(%s,%s)"
+        args = [sid, info]
+        try:
+            self.cursor.execute(sql, args)
+            self.connect.commit()
+        except Exception as e:
+            print(e)
+            return False
+        return True
+
     def updateOJCookie(self, oid, cookie):
         sql = "UPDATE otheroj set cookie=%s, login_time=NOW() WHERE id=%s"
         args = [cookie, oid]

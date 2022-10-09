@@ -297,6 +297,7 @@ def submit(player):
                         break
                     sleep(3)
                 verdict = resp['verdict']
+                info = resp['info']
 
                 result = 6
                 if "Accepted" in verdict:
@@ -318,6 +319,7 @@ def submit(player):
                 # elif res == "OUTPUT_LIMIT_EXCEEDED":
                 #     result = 9
                 db.updateSolutionResult(player.sid, str(result))
+                db.addInfo(player.sid, info)
                 db.updateSolutionJudge(player.sid, "codeforces" + str(oj['id']))
                 if result == 4:
                     db.updateProblemAC(player.tid)

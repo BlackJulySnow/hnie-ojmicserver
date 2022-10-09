@@ -45,7 +45,26 @@ def cfgetResult(submissionId, cookie):
         print(res['waiting'])
         return {'result': 'false', 'msg': 'waiting'}
     print(res['verdict'])
-    return {'result': "true", 'verdict': res['verdict']}
+
+    testCount = res['testCount']
+    count = int(testCount)
+    info = ""
+    for i in range(1, count + 1):
+        k = str(i)
+        info += "\n" + "Test: #" + k + ", time: " + res['timeConsumed#'+k] + \
+                "ms, memory: " + res['memoryConsumed#'+k] + "B, exit code: " + \
+                res['exitCode#'+k] + ", checker exit code: " + res['checkerExitCode#'+k] + \
+                ", verdict: " + res['verdict#'+k] + "\n"
+        info += "\n" + "Input" + "\n"
+        info += res['input#'+k]
+        info += "\n" + "Output" + "\n"
+        info += res['output#'+k]
+        info += "\n" + "Answer" + "\n"
+        info += res['answer#'+k]
+        info += "\n" + "Checker Log" + "\n"
+        info += res['checkerStdoutAndStderr#'+k] + "\n"
+
+    return {'result': "true", 'verdict': res['verdict'], 'info': info}
 
 
 if __name__ == '__main__':
@@ -53,10 +72,10 @@ if __name__ == '__main__':
     resq = None
     for i in range(0, 10):
         try:
-            resq = cfgetResult('170450659')
+            resq = cfgetResult('175202997', {"result": "true", "JSESSIONID": "501148A914FD245BFC1F5F7A4FE5A418-n1", "X_User_Sha1": "a72c145eafcddff1ef4a45cb1405b233bd3e87d0", "ftaa": "m107vea1ofp8ors2va", "bfaa": "0ed96987fd908a6f6f0c77f18469141f", "csrf_token": "6d23a9b457659e668eb8c4f62854257d"})
             flag = resq['result']
         except Exception as e:
-            pass
+            print(e)
         if flag:
             break
     print(resq)
