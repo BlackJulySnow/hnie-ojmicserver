@@ -125,10 +125,12 @@ def submit(player):
                 oj['status'] = 1
                 db = MysqlUtil()
                 res = 6
+                resq = None
                 flag = False
                 for i in range(10):
                     db.updateSolutionResult(player.sid, 21)
-                    res = Acwing(player.code, player.lang, player.to_id, oj['cookie']).run()
+                    resq = Acwing(player.code, player.lang, player.to_id, oj['cookie']).run()
+                    res = resq['status']
                     if res is not None:
                         break
                     oj['cookie'] = AcwingLogin(oj['username'], oj['password'])
@@ -176,6 +178,7 @@ def submit(player):
                             break
                         sleep(1)
                 db.updateSolutionResult(player.sid, str(result))
+                db.addInfo(player.sid, resq['info'])
                 db.updateSolutionJudge(player.sid, "acwing" + str(oj['id']))
                 if result == 4:
                     db.updateProblemAC(player.tid)

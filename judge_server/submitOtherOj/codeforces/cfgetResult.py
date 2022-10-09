@@ -51,6 +51,7 @@ def cfgetResult(submissionId, cookie):
     info = ""
     for i in range(1, count + 1):
         k = str(i)
+        info += "\n======================================================================="
         info += "\n" + "Test: #" + k + ", time: " + res['timeConsumed#'+k] + \
                 "ms, memory: " + res['memoryConsumed#'+k] + "B, exit code: " + \
                 res['exitCode#'+k] + ", checker exit code: " + res['checkerExitCode#'+k] + \
@@ -63,6 +64,7 @@ def cfgetResult(submissionId, cookie):
         info += res['answer#'+k]
         info += "\n" + "Checker Log" + "\n"
         info += res['checkerStdoutAndStderr#'+k] + "\n"
+        info += "=======================================================================\n"
 
     return {'result': "true", 'verdict': res['verdict'], 'info': info}
 

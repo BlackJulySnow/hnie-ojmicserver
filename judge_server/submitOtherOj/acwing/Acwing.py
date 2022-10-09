@@ -59,4 +59,10 @@ class Acwing:
             if 'status' in response:
                 if response['status'] != "ready" and response['status'] != "Pending" and response['status'] != "Judging":
                     self.ws.close()
-                    return response['status']
+                    info = "\n输入\n" + response['testcase_input'] + \
+                           "\n输出\n" + response['testcase_user_output'] + \
+                           "\n标准答案\n" + response['testcase_output']
+                    return {
+                        "status": response['status'],
+                        "info": info,
+                    }
