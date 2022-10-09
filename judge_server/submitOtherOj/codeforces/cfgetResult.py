@@ -58,11 +58,19 @@ def cfgetResult(submissionId, cookie):
                 ", verdict: " + res['verdict#'+k] + "\n"
         info += "\n" + "Input" + "\n"
         info += res['input#'+k]
-        info += "\n" + "Output" + "\n"
-        info += res['output#'+k]
-        info += "\n" + "Answer" + "\n"
-        info += res['answer#'+k]
-        info += "\n" + "Checker Log" + "\n"
+
+        info += "\n" + "Output" + "\t" + "Answer" + "\n"
+
+        outputs = res['output#'+k].replace('\r', "").split('\n')
+        answers = res['answer#'+k].replace('\r', "").split('\n')
+
+        for j in range(len(outputs)):
+            if outputs[j] == answers[j]:
+                info += outputs[j] + "\t\t" + answers[j] + '\n'
+            else:
+                info += outputs[j] + "\t\t|" + answers[j] + '\n'
+
+        info += "Checker Log" + "\n"
         info += res['checkerStdoutAndStderr#'+k] + "\n"
         info += "=======================================================================\n"
 
@@ -80,4 +88,4 @@ if __name__ == '__main__':
             print(e)
         if flag:
             break
-    print(resq)
+    print(resq['info'])
