@@ -3,6 +3,8 @@
 import glob
 import json
 import sys
+import os
+from os import path
 sys.path.insert(0, glob.glob('../../')[0])
 
 from thrift.transport import TSocket
@@ -45,6 +47,8 @@ class Player:
         self.to_id = res['to_id']
         self.spj = res['source']
         self.cf_id = res['cf_id']
+        self.langs = ["c", "cpp", '', 'java', '', '', "py"]
+        self.language = self.langs[self.lang]
         db.closeMysql()
 
         if self.spj == "acwing":
@@ -69,6 +73,67 @@ class Player:
             elif self.lang == 6:
                 lang = "31"  # Python 3.8.10
             self.lang = lang
+
+    def makeacfile(self):
+        filepath = "/home/judge/data/" + str(self.tid) + "/ac/" + str(self.sid) + "." + self.language
+        if not os.path.exists("/home/judge/data/" + str(self.tid)):
+            cmd = "mkdir /home/judge/data/" + str(self.tid)
+            os.system(cmd)
+        if not os.path.exists("/home/judge/data/" + str(self.tid) + "/ac"):
+            cmd = "mkdir /home/judge/data/" + str(self.tid) + "/ac"
+            os.system(cmd)
+        cmd = "touch " + filepath
+        os.system(cmd)
+        with open(filepath, 'w') as file_object:
+            file_object.write(self.code)
+
+    def getsim(self, selfsid):
+        url = "/home/judge/data/" + str(self.tid) + "/ac/"
+        filename = str(self.sid) + "." + self.language
+        cmd = ""
+        sim = 0
+        sim_id = '0'
+        if self.language == "py":
+            return None
+        if self.language == 'c':
+            cmd = "sim_c -t 50 -p -o " + str(self.sid) + ".txt -T " + url + filename
+        elif self.language == 'cpp':
+            cmd = "sim_c++ -t 50 -p -o " + str(self.sid) + ".txt -T " + url + filename
+        elif self.language == 'java':
+            cmd = "sim_java -t 50 -p -o " + str(self.sid) + ".txt -T " + url + filename
+        for file in os.listdir(url):
+            if file == filename or int(file[:file.find('.')]) > int(self.sid) or int(file[:file.find('.')]) in selfsid:
+                continue
+            if (self.language == 'c' or self.language == 'cpp') and 'c' not in file:
+                continue
+            if self.language == 'java' and 'java' not in file:
+                continue
+            os.system(cmd + ' ' + path.join(url, file))
+            with open(str(self.sid) + ".txt", 'r') as f:
+                for line in f:
+                    if '%' in line:
+                        p = line.find('%')
+                        s = int(line[p - 3:p - 1])
+                        print(line)
+                        if line[p - 4] == '1':
+                            s = 100
+                        sim = max(sim, s)
+                        sim_id = file[:file.find('.')]
+        if os.path.exists(str(self.sid) + ".txt"):
+            cmd = "rm " + str(self.sid) + ".txt"
+            os.system(cmd)
+        return {'sim': sim, 'sim_id': sim_id}
+
+    def sim(self):
+        db1 = MysqlUtil()
+        selfsid = db1.getselfsid(self.tid, self.userid)
+        res = self.getsim(selfsid)
+        print(res)
+        if res is not None and res['sim_id'] != '0' and res['sim'] > 50:
+            db1.addSim(self.sid, res['sim_id'], res['sim'])
+        db1.closeMysql()
+
+        self.makeacfile()
 
 
 class Pool:
@@ -182,6 +247,7 @@ def submit(player):
                 db.updateSolutionJudge(player.sid, "acwing" + str(oj['id']))
                 if result == 4:
                     db.updateProblemAC(player.tid)
+                    Thread(target=player.sim, daemon=True).start()
                 db.updateProblem(player.tid)
                 db.updateUserSolution(player.userid)
                 db.updateUserSubmit(player.userid)
@@ -229,6 +295,7 @@ def submit(player):
                 db.updateSolutionResult(player.sid, info['result'])
                 if result == 4:
                     db.updateProblemAC(player.tid)
+                    Thread(target=player.sim, daemon=True).start()
                 db.updateSolutionJudge(player.sid, "CSG" + str(oj['id']))
                 db.updateProblem(player.tid)
                 db.updateUserSolution(player.userid)
@@ -246,7 +313,7 @@ def submit(player):
                 submissionId = ""
                 for i in range(10):
                     db.updateSolutionResult(player.sid, 21)
-                    res = cfsubmit(player.to_id, player.cf_id, player.lang, player.code, oj['cookie'])
+                    res = cfsubmit(player.to_id, player.cf_id, player.lang, player.code, oj['cookie'], oj['username'])
                     if res['result'] == "true":
                         submissionId = res['submissionId']
                         break
@@ -326,6 +393,7 @@ def submit(player):
                 db.updateSolutionJudge(player.sid, "codeforces" + str(oj['id']))
                 if result == 4:
                     db.updateProblemAC(player.tid)
+                    Thread(target=player.sim, daemon=True).start()
                 db.updateProblem(player.tid)
                 db.updateUserSolution(player.userid)
                 db.updateUserSubmit(player.userid)

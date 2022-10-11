@@ -37,6 +37,7 @@ def cfgetMessage(submissionId, cookie):
         print(e)
         return {'result': 'false', 'mag': "获取信息时错误", 'time': '1', 'space': '1000'}
     s = res.text
+    print(s)
 
     match0 = re.findall('submissionId="(.*?)"', s)
     if match0[0] != submissionId:
@@ -53,7 +54,7 @@ if __name__ == '__main__':
     resq = None
     for i in range(0, 10):
         try:
-            resq = cfgetMessage('170450658')
+            resq = cfgetMessage('175491045', {"result": "true", "JSESSIONID": "E7E004FEC4A6E56EBB3859F7ABD203B4-n1", "X_User_Sha1": "9ee9673b6cc183716ec33547728fe6d18b1ba898", "ftaa": "dhjypfwev3g20rx4fo", "bfaa": "748390a84a22d8f4e9b56ff73b8d9aed", "csrf_token": "54ba916501d11ddb007356b75624d5db"})
             flag = resq['result']
         except Exception as e:
             pass

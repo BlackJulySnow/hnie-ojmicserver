@@ -94,15 +94,78 @@ class MysqlUtil:
             return None
         return userid
 
-    def addInfo(self, sid, info):
-        sql = "INSERT INTO `runtimeinfo`(`solution_id`,`error`) VALUES(%s,%s)"
-        args = [sid, info]
+    def getselfsid(self, tid, userid):
+        sql = 'SELECT solution_id FROM `solution` WHERE problem_id=%s and user_id=%s and result=4'
+        args = [tid, userid]
         try:
             self.cursor.execute(sql, args)
-            self.connect.commit()
+            result = self.cursor.fetchall()
+            resq = []
+            for row in result:
+                resq.append(row[0])
         except Exception as e:
             print(e)
-            return False
+            return None
+        return resq
+
+    def addInfo(self, sid, info):
+        sql = "SELECT COUNT(*) FROM `runtimeinfo` WHERE solution_id=%s"
+        args = [sid]
+        try:
+            self.cursor.execute(sql, args)
+            result = self.cursor.fetchall()
+            count = result[0][0]
+        except Exception as e:
+            print(e)
+            return None
+        if count == 0:
+            sql = "INSERT INTO `runtimeinfo`(`solution_id`,`error`) VALUES(%s,%s)"
+            args = [sid, info]
+            try:
+                self.cursor.execute(sql, args)
+                self.connect.commit()
+            except Exception as e:
+                print(e)
+                return False
+        else:
+            sql = "UPDATE runtimeinfo set error=%s WHERE solution_id=%s"
+            args = [info, sid]
+            try:
+                self.cursor.execute(sql, args)
+                self.connect.commit()
+            except Exception as e:
+                print(e)
+                return False
+        return True
+
+    def addSim(self, sid, sim_id, sim):
+        sql = "SELECT COUNT(*) FROM `sim` WHERE s_id=%s"
+        args = [sid]
+        try:
+            self.cursor.execute(sql, args)
+            result = self.cursor.fetchall()
+            count = result[0][0]
+        except Exception as e:
+            print(e)
+            return None
+        if count == 0:
+            sql = "INSERT INTO `sim`(`s_id`,`sim_s_id`,`sim`) VALUES(%s,%s,%s)"
+            args = [sid, sim_id, sim]
+            try:
+                self.cursor.execute(sql, args)
+                self.connect.commit()
+            except Exception as e:
+                print(e)
+                return False
+        else:
+            sql = "UPDATE sim set sim_s_id=%s, sim=%s WHERE s_id=%s"
+            args = [sim_id, sim, sid]
+            try:
+                self.cursor.execute(sql, args)
+                self.connect.commit()
+            except Exception as e:
+                print(e)
+                return False
         return True
 
     def updateOJCookie(self, oid, cookie):
