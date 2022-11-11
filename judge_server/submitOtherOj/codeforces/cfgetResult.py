@@ -59,7 +59,7 @@ def cfgetResult(submissionId, cookie):
         info += "\n" + "Input" + "\n"
         info += res['input#'+k]
 
-        info += "\n{:20}{:20}\n".format("Output", "Answer")
+        info += "\n{:40}{:20}\n".format("Output", "Answer")
 
         outputs = res['output#'+k].replace('\r', "").split('\n')
         answers = res['answer#'+k].replace('\r', "").split('\n')
@@ -70,9 +70,9 @@ def cfgetResult(submissionId, cookie):
             if j >= len(answers):
                 answers.append(" ")
             if outputs[j] == answers[j]:
-                info += "{:20}{:20}\n".format(outputs[j], answers[j])
+                info += "{:40}{:20}\n".format(outputs[j], answers[j])
             else:
-                info += "{:19}{}{:20}\n".format(outputs[j], "|", answers[j])
+                info += "{:39}{}{:20}\n".format(outputs[j], "|", answers[j])
 
         info += "Checker Log" + "\n"
         info += res['checkerStdoutAndStderr#'+k] + "\n"
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     resq = None
     for i in range(0, 10):
         try:
-            resq = cfgetResult('175243235', {"result": "true", "JSESSIONID": "501148A914FD245BFC1F5F7A4FE5A418-n1", "X_User_Sha1": "a72c145eafcddff1ef4a45cb1405b233bd3e87d0", "ftaa": "m107vea1ofp8ors2va", "bfaa": "0ed96987fd908a6f6f0c77f18469141f", "csrf_token": "6d23a9b457659e668eb8c4f62854257d"})
+            resq = cfgetResult('178669979', {"result": "true", "JSESSIONID": "57EB9EBD9309A201AA69F8A00FA72F8B-n1", "X_User_Sha1": "a72c145eafcddff1ef4a45cb1405b233bd3e87d0", "ftaa": "m107vea1ofp8ors2va", "bfaa": "0ed96987fd908a6f6f0c77f18469141f", "csrf_token": "543b3bdfaaf23efe64a1ee856867dbf8"})
             flag = resq['result']
         except Exception as e:
             print(e)

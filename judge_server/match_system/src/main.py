@@ -125,6 +125,7 @@ class Player:
         return {'sim': sim, 'sim_id': sim_id}
 
     def sim(self):
+        self.makeacfile()
         db1 = MysqlUtil()
         selfsid = db1.getselfsid(self.tid, self.userid)
         res = self.getsim(selfsid)
@@ -133,7 +134,6 @@ class Player:
             db1.addSim(self.sid, res['sim_id'], res['sim'])
         db1.closeMysql()
 
-        self.makeacfile()
 
 
 class Pool:
@@ -195,11 +195,13 @@ def submit(player):
                 for i in range(10):
                     db.updateSolutionResult(player.sid, 21)
                     resq = Acwing(player.code, player.lang, player.to_id, oj['cookie']).run()
+                    if resq is None:
+                        oj['cookie'] = AcwingLogin(oj['username'], oj['password'])
+                        db.updateOJCookie(oj['id'], oj['cookie'])
+                        continue
                     res = resq['status']
                     if res is not None:
                         break
-                    oj['cookie'] = AcwingLogin(oj['username'], oj['password'])
-                    db.updateOJCookie(oj['id'], oj['cookie'])
                     if i >= 9:
                         flag = True
                 if flag:
@@ -402,7 +404,7 @@ def submit(player):
                 info = None
                 for i in range(0, 10):
                     try:
-                        info = cfgetMessage(submissionId, oj['cookie'])
+                        info = cfgetMessage(submissionId, oj['cookie'], player.to_id)
                         flag = info['result']
                     except Exception as e:
                         print(e)

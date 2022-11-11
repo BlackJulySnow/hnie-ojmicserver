@@ -76,3 +76,11 @@ def submitAcwing(request):
         pass
 
     return HttpResponse(res)
+
+
+if __name__ == '__main__':
+    res = None
+    try:
+        res = webcket("123", "c++", "1001", "csrftoken=6gZS1z3PdR0Ilvuw3fU97ms5bFOm4cTnVS47XkUdnRT73KdMT8E0tH1brN9hmHqm; sessionid=2yf88rp8i6rwtyr4ha71960fbdedpfto").run()
+    except Exception as e:
+        pass

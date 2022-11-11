@@ -19,6 +19,7 @@ from sendEmail.views.sendEmail import sendEmail
 from sendEmail.views.submitAcwing import submitAcwing
 from sendEmail.views.SubmitOtherOj import SubmitOtherOj
 from sendEmail.views.getProblem.getCfProblem import getCfProblem
+from sendEmail.views.student.getInfo import getInfo
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +27,5 @@ urlpatterns = [
     path('submitAcwing/', submitAcwing),
     path('SubmitOtherOj/', SubmitOtherOj),
     path('getproblem/cf/', getCfProblem),
+    path('getstuinfo/', getInfo),
 ]

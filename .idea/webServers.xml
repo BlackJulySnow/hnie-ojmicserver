@@ -10,14 +10,14 @@
         </fileTransfer>
       </webServer>
       <webServer id="f1122181-e264-4c23-8f7a-2ffd0e5cc394" name="10.0.38.102">
-        <fileTransfer rootFolder="/home/acmore/WGdaka" accessType="SFTP" host="10.0.38.111" port="22" sshConfigId="8954f570-7e83-4992-83d9-0b38b65dc60c" sshConfig="acmore@10.0.38.111:22 password">
+        <fileTransfer rootFolder="/home/acmore/WGdaka" accessType="SFTP" host="10.0.38.111" port="22" sshConfigId="8954f570-7e83-4992-83d9-0b38b65dc60c" sshConfig="root@10.0.38.111:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>
       <webServer id="e0ed8aa7-c388-48d1-b628-283697ee9678" name="10.0.38.111">
-        <fileTransfer rootFolder="/home/acmore" accessType="SFTP" host="10.0.38.111" port="22" sshConfigId="8954f570-7e83-4992-83d9-0b38b65dc60c" sshConfig="acmore@10.0.38.111:22 password">
+        <fileTransfer rootFolder="/root" accessType="SFTP" host="10.0.38.111" port="22" sshConfigId="8954f570-7e83-4992-83d9-0b38b65dc60c" sshConfig="root@10.0.38.111:22 password">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

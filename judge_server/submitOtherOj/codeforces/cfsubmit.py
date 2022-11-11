@@ -7,8 +7,13 @@ urllib3.disable_warnings()
 # import pyOpenSSL
 
 
-def getsubmissionId(cookie):
-    url = "https://codeforces.com/problemset/status?my=on"
+def getsubmissionId(cookie, cid):
+    if cid < 100000:
+        url = "https://codeforces.com/problemset/status?my=on"
+        referer = "https://codeforces.com/problemset/status?my=on"
+    else:
+        url = "https://codeforces.com/gym/" + str(cid) + "/my"
+        referer = "https://codeforces.com/gym/" + str(cid) + "/submit?csrf_token=" + cookie['csrf_token']
     try:
         headers = {
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -19,7 +24,7 @@ def getsubmissionId(cookie):
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "accept-encoding": 'gzip, deflate, br',
             "origin": "https://codeforces.com",
-            "referer": "https://codeforces.com/problemset/status?my=on",
+            "referer": referer,
             "upgrade-insecure-requests": "1",
             "content-type": "application/x-www-form-urlencoded",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
@@ -42,8 +47,14 @@ def getsubmissionId(cookie):
 
 
 def cfsubmit(contestId, id, lang, code, cookie, username):
+    cid = int(contestId)
     try:
-        url = "https://codeforces.com/problemset/submit?csrf_token=" + cookie['csrf_token']
+        if cid < 100000:
+            url = "https://codeforces.com/problemset/submit?csrf_token=" + cookie['csrf_token']
+            referer = "https://codeforces.com/problemset/submit"
+        else:
+            url = "https://codeforces.com/gym/" + str(contestId) + "/submit?csrf_token=" + cookie['csrf_token']
+            referer = "https://codeforces.com/gym/" + str(contestId) + "/submit?csrf_token=" + cookie['csrf_token']
         headers = {
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'accept-encoding': 'gzip, deflate, br',
@@ -53,7 +64,7 @@ def cfsubmit(contestId, id, lang, code, cookie, username):
             "scheme": "https",
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "origin": "https://codeforces.com",
-            "referer": "https://codeforces.com/problemset/submit",
+            "referer": referer,
             "upgrade-insecure-requests": "1",
             "content-type": "application/x-www-form-urlencoded",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
@@ -78,29 +89,33 @@ def cfsubmit(contestId, id, lang, code, cookie, username):
         }
         res = requests.post(url=url, data=data, headers=headers, verify=False, timeout=60)
         s = res.text
-        print(s)
+        # print(s)
         if s.find('<a href="/enter?back=%2F">Enter</a>') != -1:
             return {'result': 'false', 'msg': 'unlogin'}
-        match = re.findall('submissionId="(.*?)"', s)
-        submissionId = match[0]
-        if len(match) == 0:
+        match = []
+        if cid < 100000:
+            match = re.findall('submissionId="(.*?)"', s)
+        if len(match) == 0 and cid < 100000:
             match1 = re.findall('<span class="error for__source">(.*?)</span>', s)
             return {'result': 'false', 'msg': match1[0]}
-        match1 = re.findall('user-black">(.*?)</a>', s)
-        user = match1[0]
-        print(str(user) + " " + str(username))
-        if user != username:
-            flag = False
-            resq = None
-            for i in range(0, 10):
-                try:
-                    resq = getsubmissionId(cookie)
-                    flag = resq['result']
-                except Exception as e:
-                    pass
-                if flag == "true":
-                    submissionId = resq['submissionId']
-                    break
+        # match1 = re.findall('user-black">(.*?)</a>', s)
+        # user = match1[0]
+        # print(str(user) + " " + str(username))
+        # submissionId = match[0]
+        # if user != username:
+        flag = False
+        resq = None
+        submissionId = ""
+        for i in range(0, 10):
+            try:
+                resq = getsubmissionId(cookie, cid)
+                flag = resq['result']
+            except Exception as e:
+                pass
+            if flag == "true":
+                submissionId = resq['submissionId']
+                print(submissionId)
+                break
         return {'result': 'true', 'submissionId': submissionId}
     except Exception as e:
         print(e)
@@ -108,6 +123,8 @@ def cfsubmit(contestId, id, lang, code, cookie, username):
 
 
 if __name__ == '__main__':
-    res = cfsubmit("1738", "A", "54", "#include \"bits/stdc++.h\"\r\nusing namespace std;\r\n\r\nconst int N = 100010;\r\n\r\nint main() {\r\n    int t;\r\n    cin >> t;\r\n    while(t --) {\r\n        int n, status[N],cnti = 0, cntf = 0;\r\n        long long ice[N], fire[N];\r\n        scanf(\"%d\", &n);\r\n        for(int i = 0; i < n; i ++ )\r\n            scanf(\"%d\", &status[i]);\r\n        for(int i = 0; i < n; i ++ )\r\n            if(status[i] == 0) {\r\n                scanf(\"%d\", &ice[cnti]);\r\n                cnti ++;\r\n            }\r\n            else {\r\n                scanf(\"%d\", &fire[cntf]);\r\n                cntf++;\r\n            }\r\n\r\n        sort(ice,ice + cnti);\r\n        sort(fire, fire + cntf);\r\n\r\n        long long ans = 0;\r\n        if(cnti < cntf) {\r\n            int j = cntf - 1;\r\n           for(int i = 0; i < cnti; i ++ )\r\n               ans += (2 * ((long long)fire[j--] + ice[i]));\r\n           while(j >= 0)\r\n               ans += fire[j--];\r\n        }\r\n        else if(cnti == cntf) {\r\n            if(ice[0] < fire[0])\r\n                ans += ice[0] + 2 * fire[0];\r\n            else\r\n                ans += fire[0] + 2 * ice[0];\r\n            for(int i = 1; i < cnti; i ++ )\r\n                ans += 2 * (fire[i] + ice[i]);\r\n        }\r\n        else {\r\n            int j = cnti - 1;\r\n            for(int i = 0; i < cntf; i ++)\r\n                ans += (2 * (ice[j--] + fire[i]));\r\n            while(j >= 0)\r\n                ans += ice[j--];\r\n        }\r\n        printf(\"%lld\\n\", ans);\r\n    }\r\n\r\n    return 0;\r\n}\r\n",
-             {"result": "true", "JSESSIONID": "E7E004FEC4A6E56EBB3859F7ABD203B4-n1", "X_User_Sha1": "9ee9673b6cc183716ec33547728fe6d18b1ba898", "ftaa": "dhjypfwev3g20rx4fo", "bfaa": "748390a84a22d8f4e9b56ff73b8d9aed", "csrf_token": "54ba916501d11ddb007356b75624d5db"}, "hnie1")
+    res = cfsubmit("104008", "A", "54", "#include \"bits/stdc++.h\"\r\n\r\n\r\nconst int N = 100010;\r\n\r\nint main() {\r\n    int t;\r\n    cin >> t;\r\n    while(t --) {\r\n        int n, status[N],cnti = 0, cntf = 0;\r\n        long long ice[N], fire[N];\r\n        scanf(\"%d\", &n);\r\n        for(int i = 0; i < n; i ++ )\r\n            scanf(\"%d\", &status[i]);\r\n        for(int i = 0; i < n; i ++ )\r\n            if(status[i] == 0) {\r\n                scanf(\"%d\", &ice[cnti]);\r\n                cnti ++;\r\n            }\r\n            else {\r\n                scanf(\"%d\", &fire[cntf]);\r\n                cntf++;\r\n            }\r\n\r\n        sort(ice,ice + cnti);\r\n        sort(fire, fire + cntf);\r\n\r\n        long long ans = 0;\r\n        if(cnti < cntf) {\r\n            int j = cntf - 1;\r\n           for(int i = 0; i < cnti; i ++ )\r\n               ans += (2 * ((long long)fire[j--] + ice[i]));\r\n           while(j >= 0)\r\n               ans += fire[j--];\r\n        }\r\n        else if(cnti == cntf) {\r\n            if(ice[0] < fire[0])\r\n                ans += ice[0] + 2 * fire[0];\r\n            else\r\n                ans += fire[0] + 2 * ice[0];\r\n            for(int i = 1; i < cnti; i ++ )\r\n                ans += 2 * (fire[i] + ice[i]);\r\n        }\r\n        else {\r\n            int j = cnti - 1;\r\n            for(int i = 0; i < cntf; i ++)\r\n                ans += (2 * (ice[j--] + fire[i]));\r\n            while(j >= 0)\r\n                ans += ice[j--];\r\n        }\r\n        printf(\"%lld\\n\", ans);\r\n    }\r\n\r\n    return 0;\r\n}\r\n",
+             {"result": "true", "JSESSIONID": "D106803B13FCFC94C6F99225DD8048E9-n1", "X_User_Sha1": "a2860f13e6950e253d9bf2841220bde962e85e87", "ftaa": "am9gg9ww3h541sbe5p", "bfaa": "20cede18901b680d11fc6e47c5f355e0", "csrf_token": "01349fdec96f8236b98045b2ee15b5e4"}, "hnie3")
+    # res = getsubmissionId({"result": "true", "JSESSIONID": "D106803B13FCFC94C6F99225DD8048E9-n1", "X_User_Sha1": "a2860f13e6950e253d9bf2841220bde962e85e87", "ftaa": "am9gg9ww3h541sbe5p", "bfaa": "20cede18901b680d11fc6e47c5f355e0", "csrf_token": "01349fdec96f8236b98045b2ee15b5e4"}
+    #                       , 104008)
     print(res)
