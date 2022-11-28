@@ -3,6 +3,5 @@ FROM hnie:pythonbase
 WORKDIR /home/judge/judge_server
 
 EXPOSE 9090
-EXPOSE 22
 
 ENTRYPOINT ["python3","./match_system/src/main.py"]
