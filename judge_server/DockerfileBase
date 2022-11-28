@@ -1,0 +1,7 @@
+FROM python:3.6.8
+
+WORKDIR /home/judge/judge_server
+COPY . .
+RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+ENTRYPOINT ["/bin/bash"]
