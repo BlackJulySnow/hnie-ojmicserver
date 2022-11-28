@@ -5,7 +5,7 @@ import json
 import sys
 import os
 from os import path
-sys.path.insert(0, glob.glob('../../')[0])
+sys.path.insert(0, glob.glob('./')[0])
 
 from thrift.transport import TSocket
 from thrift.transport import TTransport
@@ -333,7 +333,7 @@ def submit(player):
                     if res['msg'] == 'unlogin':
                         resp = None
                         for i in range(10):
-                            resp = cflogin(oj['username'], oj['password'], oj['id'])
+                            resp = cflogin(oj['username'], oj['password'], oj['id'], oj['cookie'])
                             if resp['result'] == 'true':
                                 break
                         oj['cookie'] = resp

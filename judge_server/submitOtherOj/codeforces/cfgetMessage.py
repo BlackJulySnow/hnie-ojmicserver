@@ -1,3 +1,5 @@
+import traceback
+
 import requests
 import urllib3
 import re
@@ -29,7 +31,7 @@ def cfgetMessage(submissionId, cookie, contestId):
             "upgrade-insecure-requests": "1",
             "content-type": "application/x-www-form-urlencoded",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
-            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";",
+            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";" + cookie['cookie'],
             'sec-ch-ua': '"Microsoft Edge";v="105", " Not;A Brand";v="99", "Chromium";v="105"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
@@ -40,7 +42,7 @@ def cfgetMessage(submissionId, cookie, contestId):
         }
         res = requests.get(url=url, headers=headers, verify=False, timeout=60)
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         return {'result': 'false', 'mag': "获取信息时错误", 'time': '1', 'space': '1000'}
     s = res.text
     # print(s)

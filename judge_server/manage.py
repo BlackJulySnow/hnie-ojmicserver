@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from threading import Thread
 
 
 def main():
@@ -18,5 +19,10 @@ def main():
     execute_from_command_line(sys.argv)
 
 
+def jugde_start():
+    os.system("python3 ./match_system/src/main.py")
+
+
 if __name__ == '__main__':
+    # Thread(target=jugde_start, args=(), daemon=True).start()
     main()

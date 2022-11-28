@@ -139,3 +139,4 @@ CACHES = {
     },
 }
 USER_AGENTS_CACHE = 'default'
+APPEND_SLASH = False

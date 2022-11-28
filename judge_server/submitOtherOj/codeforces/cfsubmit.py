@@ -1,3 +1,5 @@
+import traceback
+
 import requests
 import urllib3
 import re
@@ -28,7 +30,7 @@ def getsubmissionId(cookie, cid):
             "upgrade-insecure-requests": "1",
             "content-type": "application/x-www-form-urlencoded",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
-            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";",
+            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";" + cookie['cookie'],
             'sec-ch-ua': '"Microsoft Edge";v="105", " Not;A Brand";v="99", "Chromium";v="105"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
@@ -39,7 +41,7 @@ def getsubmissionId(cookie, cid):
         }
         res = requests.get(url=url, headers=headers, verify=False, timeout=60)
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         return {'result': 'false', 'mag': "获取提交id失败"}
     s = res.text
     match0 = re.findall('submissionId="(.*?)"', s)
@@ -68,7 +70,7 @@ def cfsubmit(contestId, id, lang, code, cookie, username):
             "upgrade-insecure-requests": "1",
             "content-type": "application/x-www-form-urlencoded",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
-            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";",
+            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";" + cookie['cookie'],
             'sec-ch-ua': '"Microsoft Edge";v="105", " Not;A Brand";v="99", "Chromium";v="105"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
@@ -118,13 +120,13 @@ def cfsubmit(contestId, id, lang, code, cookie, username):
                 break
         return {'result': 'true', 'submissionId': submissionId}
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         return {'result': 'false', 'msg': "提交时出现错误"}
 
 
 if __name__ == '__main__':
-    res = cfsubmit("104008", "A", "54", "#include \"bits/stdc++.h\"\r\n\r\n\r\nconst int N = 100010;\r\n\r\nint main() {\r\n    int t;\r\n    cin >> t;\r\n    while(t --) {\r\n        int n, status[N],cnti = 0, cntf = 0;\r\n        long long ice[N], fire[N];\r\n        scanf(\"%d\", &n);\r\n        for(int i = 0; i < n; i ++ )\r\n            scanf(\"%d\", &status[i]);\r\n        for(int i = 0; i < n; i ++ )\r\n            if(status[i] == 0) {\r\n                scanf(\"%d\", &ice[cnti]);\r\n                cnti ++;\r\n            }\r\n            else {\r\n                scanf(\"%d\", &fire[cntf]);\r\n                cntf++;\r\n            }\r\n\r\n        sort(ice,ice + cnti);\r\n        sort(fire, fire + cntf);\r\n\r\n        long long ans = 0;\r\n        if(cnti < cntf) {\r\n            int j = cntf - 1;\r\n           for(int i = 0; i < cnti; i ++ )\r\n               ans += (2 * ((long long)fire[j--] + ice[i]));\r\n           while(j >= 0)\r\n               ans += fire[j--];\r\n        }\r\n        else if(cnti == cntf) {\r\n            if(ice[0] < fire[0])\r\n                ans += ice[0] + 2 * fire[0];\r\n            else\r\n                ans += fire[0] + 2 * ice[0];\r\n            for(int i = 1; i < cnti; i ++ )\r\n                ans += 2 * (fire[i] + ice[i]);\r\n        }\r\n        else {\r\n            int j = cnti - 1;\r\n            for(int i = 0; i < cntf; i ++)\r\n                ans += (2 * (ice[j--] + fire[i]));\r\n            while(j >= 0)\r\n                ans += ice[j--];\r\n        }\r\n        printf(\"%lld\\n\", ans);\r\n    }\r\n\r\n    return 0;\r\n}\r\n",
-             {"result": "true", "JSESSIONID": "D106803B13FCFC94C6F99225DD8048E9-n1", "X_User_Sha1": "a2860f13e6950e253d9bf2841220bde962e85e87", "ftaa": "am9gg9ww3h541sbe5p", "bfaa": "20cede18901b680d11fc6e47c5f355e0", "csrf_token": "01349fdec96f8236b98045b2ee15b5e4"}, "hnie3")
+    res = cfsubmit("104008", "A", "54", "#include \"bits/stdc++.h\"\r\n\r\n\r\n\nconst int N = 100010;\r\n\r\nint main() {\r\n    int t;\r\n    cin >> t;\r\n    while(t --) {\r\n        int n, status[N],cnti = 0, cntf = 0;\r\n        long long ice[N], fire[N];\r\n        scanf(\"%d\", &n);\r\n        for(int i = 0; i < n; i ++ )\r\n            scanf(\"%d\", &status[i]);\r\n        for(int i = 0; i < n; i ++ )\r\n            if(status[i] == 0) {\r\n                scanf(\"%d\", &ice[cnti]);\r\n                cnti ++;\r\n            }\r\n            else {\r\n                scanf(\"%d\", &fire[cntf]);\r\n                cntf++;\r\n            }\r\n\r\n        sort(ice,ice + cnti);\r\n        sort(fire, fire + cntf);\r\n\r\n        long long ans = 0;\r\n        if(cnti < cntf) {\r\n            int j = cntf - 1;\r\n           for(int i = 0; i < cnti; i ++ )\r\n               ans += (2 * ((long long)fire[j--] + ice[i]));\r\n           while(j >= 0)\r\n               ans += fire[j--];\r\n        }\r\n        else if(cnti == cntf) {\r\n            if(ice[0] < fire[0])\r\n                ans += ice[0] + 2 * fire[0];\r\n            else\r\n                ans += fire[0] + 2 * ice[0];\r\n            for(int i = 1; i < cnti; i ++ )\r\n                ans += 2 * (fire[i] + ice[i]);\r\n        }\r\n        else {\r\n            int j = cnti - 1;\r\n            for(int i = 0; i < cntf; i ++)\r\n                ans += (2 * (ice[j--] + fire[i]));\r\n            while(j >= 0)\r\n                ans += ice[j--];\r\n        }\r\n        printf(\"%lld\\n\", ans);\r\n    }\r\n\r\n    return 0;\r\n}\r\n",
+             {"result": "true", "JSESSIONID": "857A54648D9582E468B7D3646F8E0F45-n1", "X_User_Sha1": "a2860f13e6950e253d9bf2841220bde962e85e87", "ftaa": "am9gg9ww3h541sbe5p", "bfaa": "20cede18901b680d11fc6e47c5f355e0", "csrf_token": "b9ec13a35096dc286b6d9d7522377f7f"}, "hnie3")
     # res = getsubmissionId({"result": "true", "JSESSIONID": "D106803B13FCFC94C6F99225DD8048E9-n1", "X_User_Sha1": "a2860f13e6950e253d9bf2841220bde962e85e87", "ftaa": "am9gg9ww3h541sbe5p", "bfaa": "20cede18901b680d11fc6e47c5f355e0", "csrf_token": "01349fdec96f8236b98045b2ee15b5e4"}
     #                       , 104008)
     print(res)

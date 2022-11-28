@@ -1,3 +1,5 @@
+import traceback
+
 import requests
 import urllib3
 import re
@@ -24,7 +26,7 @@ def cfgetResult(submissionId, cookie):
             "x-requested-with": "XMLHttpRequest",
             "x-csrf-token": cookie['csrf_token'],
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70",
-            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";",
+            "cookie": "JSESSIONID=" + cookie['JSESSIONID'] + "; X-User-Sha1=" + cookie['X_User_Sha1'] + ";" + cookie['cookie'],
             'sec-ch-ua': '"Microsoft Edge";v="105", " Not;A Brand";v="99", "Chromium";v="105"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
@@ -39,7 +41,7 @@ def cfgetResult(submissionId, cookie):
         }
         res = requests.post(url=url, data=data, headers=headers, verify=False, timeout=60).json()
     except Exception as e:
-        print(e)
+        print(traceback.format_exc())
         return {'result': 'false', 'mag': "获取结果时错误"}
     if res['waiting'] == 'true':
         print(res['waiting'])
