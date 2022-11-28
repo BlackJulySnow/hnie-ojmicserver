@@ -9,12 +9,11 @@ WORKDIR /home/judge/judge_server
 #COPY ./* ./
 COPY . .
 RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-RUN nohup python3 ./match_system/src/main.py >>judge.log 2>&1 &
-RUN nohup python3 manage.py runserver 0.0.0.0:8000 >>mail.log 2>&1 &
+#RUN
+#RUN
 
 
-EXPOSE 9090
 EXPOSE 8000
 EXPOSE 22
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["python3 manage.py runserver 0.0.0.0:8000"]
