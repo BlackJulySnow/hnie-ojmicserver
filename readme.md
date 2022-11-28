@@ -17,3 +17,5 @@
 2. 输入命令 `tmux a` 可进入上次未关闭的tmux中
 3. 在 `/home/judge/judge_server` 路径下输入命令 `python3 manage.py runserver 0.0.0.0:8000`启动 Django 服务。
 4. 在 `/home/judge/judge_server/match_system/src` 路径下输入命令 `python3 main.py` 启动 thrfit搭建的judge判题服务。
+
+#### [Docker版本的构建](judge_server/)
