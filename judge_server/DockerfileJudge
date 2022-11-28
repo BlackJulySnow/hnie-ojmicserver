@@ -7,7 +7,7 @@ FROM python:3.6.8
 
 WORKDIR /home/judge/judge_server
 #COPY ./* ./
-COPY . .
+COPY .. .
 RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 #    && nohup  >>judge.log 2>&1 & \
 #    && nohup  >>mail.log 2>&1 &
@@ -18,4 +18,4 @@ RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 EXPOSE 9090
 EXPOSE 22
 
-ENTRYPOINT ["python3 ./match_system/src/main.py"]
+ENTRYPOINT ["python3","./match_system/src/main.py"]
